@@ -1,15 +1,10 @@
-<script setup>
-import HelloWorld from './components/HelloWorld.vue'
-import TheWelcome from './components/TheWelcome.vue'
-</script>
-
 <template>
   <header>
 
   </header>
 
   <main>
-    <form @sumbit.prevent="submitForm">
+    <form @submit.prevent="submitForm">
     <div>
       <label for="email">Email:</label>
       <input type="email" id="email" v-model="email" required />
@@ -26,7 +21,28 @@ import TheWelcome from './components/TheWelcome.vue'
     </form>
   </main>
 </template>
+<script setup>
+    import { ref } from 'vue';
+    import usuarios from './data.json'
+    const email = ref('');
+    const password = ref('');
 
+  const submitForm = () => {
+  let usuarioEncontrado = false; 
+  usuarios.forEach(user => {
+    if (user.email === email.value && user.password === password.value) 
+    {
+      console.log(`Bienvenido, ${user.name}`);
+      usuarioEncontrado = true; 
+    }
+  });
+
+  if (usuarioEncontrado==false) {
+    console.log('Email o contraseña incorrectos');
+  }
+};
+
+</script>
 <style scoped>
 header {
   line-height: 1.5;

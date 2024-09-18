@@ -1,0 +1,28 @@
+[
+    {
+        "name": "Job Moore",
+        "email": "jmoore@mail.com",
+        "password": "666"
+    },
+    {
+      "name": "Juan Pérez",
+      "email": "juan.perez@example.com",
+      "password": "123456"
+    },
+    {
+      "name": "Ana Gómez",
+      "email": "ana.gomez@example.com",
+      "password": "abcdef"
+    },
+    {
+      "name": "Carlos Rodríguez",
+      "email": "carlos.rodriguez@example.com",
+      "password": "qwerty"
+    },
+    {
+      "name": "María López",
+      "email": "maria.lopez@example.com",
+      "password": "password123"
+    }
+  ]
+  
