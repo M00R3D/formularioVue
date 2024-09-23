@@ -20,11 +20,11 @@
 
     <div v-else>
       <h2>Bienvenido, {{ usuarioActual.name }}!</h2>
-      <p>Estas son las personas que están registradas:</p>
       <ul>
         <li v-for="user in usuarios" :key="user.email">
           {{ user.name }} - {{ user.email }}
         </li>
+        <button @click="cerrarSesion">Cerrar sesión</button>
       </ul>
     </div>
   </main>
@@ -44,6 +44,11 @@ onMounted(() => {
     usuarioActual.value = JSON.parse(storedUser);
   }
 });
+
+
+const cerrarSesion = () => {
+  sessionStorage.removeItem('usuarioActual');usuarioActual.value = null; 
+};
 
 const submitForm = () => {
   let usuarioEncontrado = null;
