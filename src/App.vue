@@ -1,7 +1,5 @@
 <template>
-  <header>
-
-  </header>
+  <header></header>
 
   <main>
     <form @submit.prevent="submitForm" v-if="!usuarioActual">
@@ -21,22 +19,31 @@
     <div v-else>
       <h2>Bienvenido, {{ usuarioActual.name }}!</h2>
       <ul>
-        <li v-for="user in usuarios" :key="user.email">
-          {{ user.name }} - {{ user.email }}
+        <li v-for="(user, index) in usuarios" :key="user.email">
+          {{ user.name }} - {{ user.email }} 
+          <button type="submit" @click="deleteUser(index)">Eliminar</button>
         </li>
-        <button @click="cerrarSesion">Cerrar sesión</button>
       </ul>
+      <button @click="cerrarSesion">Cerrar sesión</button>
     </div>
   </main>
 </template>
 
 <script setup>
 import { ref, onMounted } from 'vue';
-import usuarios from './data.json';
+import usuariosData from './data.json'; 
 
 const email = ref('');
 const password = ref('');
 const usuarioActual = ref(null);
+const usuarios = ref([...usuariosData]); 
+
+const deleteUser = (index) => {
+  usuarios.value.splice(index, 1);
+  if (usuarios.value.length === 0) {
+    usuarios.value = [...usuariosData]; 
+  }
+};
 
 onMounted(() => {
   const storedUser = sessionStorage.getItem('usuarioActual');
@@ -45,15 +52,15 @@ onMounted(() => {
   }
 });
 
-
 const cerrarSesion = () => {
-  sessionStorage.removeItem('usuarioActual');usuarioActual.value = null; 
+  sessionStorage.removeItem('usuarioActual');
+  usuarioActual.value = null;
 };
 
 const submitForm = () => {
   let usuarioEncontrado = null;
 
-  usuarios.forEach(user => {
+  usuarios.value.forEach(user => {
     if (user.email === email.value && user.password === password.value) {
       usuarioEncontrado = user;
       sessionStorage.setItem('usuarioActual', JSON.stringify(user));
@@ -66,7 +73,6 @@ const submitForm = () => {
   }
 };
 </script>
-    
 
 <style scoped>
 header {
