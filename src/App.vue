@@ -18,13 +18,16 @@
 
     <div v-else>
       <h2>Bienvenido, {{ usuarioActual.name }}!</h2>
+      <button @click="agregarUsuario" style="display: block; margin-top: 20px;">Agregar</button>
+
       <ul>
         <li v-for="(user, index) in usuarios" :key="user.email">
-          {{ user.name }} - {{ user.email }} 
-          <button type="submit" @click="deleteUser(index)">Eliminar</button>
+          {{ user.name }} - {{ user.email }}
+          <button @click="deleteUser(index)">Eliminar</button>
           <button @click="startEditing(user, index)">Editar</button>
         </li>
       </ul>
+
       <button @click="cerrarSesion">Cerrar sesión</button>
     </div>
 
@@ -86,13 +89,6 @@ const deleteUser = (index) => {
   }
 };
 
-onMounted(() => {
-  const storedUser = sessionStorage.getItem('usuarioActual');
-  if (storedUser) {
-    usuarioActual.value = JSON.parse(storedUser);
-  }
-});
-
 const cerrarSesion = () => {
   sessionStorage.removeItem('usuarioActual');
   usuarioActual.value = null;
@@ -111,8 +107,26 @@ const submitForm = () => {
 
   if (!usuarioEncontrado) {
     console.log('Email o contraseña incorrectos');
+  } else {
+    console.log('Usuario actual:', usuarioActual.value); // Verifica si se asigna correctamente
   }
 };
+
+const agregarUsuario = () => {
+  const nuevoUsuario = {
+    name: 'Nuevo Usuario',
+    email: `nuevo${usuarios.value.length + 1}@email.com`,
+    password: 'password123'
+  };
+  usuarios.value.push(nuevoUsuario);
+};
+
+onMounted(() => {
+  const storedUser = sessionStorage.getItem('usuarioActual');
+  if (storedUser) {
+    usuarioActual.value = JSON.parse(storedUser);
+  }
+});
 </script>
 
 <style scoped>
