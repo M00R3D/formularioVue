@@ -18,7 +18,7 @@
 
     <div v-else>
       <h2>Bienvenido, {{ usuarioActual.name }}!</h2>
-      <button @click="agregarUsuario" style="display: block; margin-top: 20px;">Agregar</button>
+      <button @click="showCreateUserForm" style="display: block; margin-top: 20px;">Agregar</button>
 
       <ul>
         <li v-for="(user, index) in usuarios" :key="user.email">
@@ -48,6 +48,24 @@
       <button type="submit">Guardar Cambios</button>
       <button type="button" @click="cancelEditing">Cancelar</button>
     </form>
+
+    <form v-if="isCreating" @submit.prevent="createUser">
+      <div>
+        <label for="newName">Nombre:</label>
+        <input type="text" id="newName" v-model="newUserForm.name" required />
+      </div>
+      <div>
+        <label for="newEmail">Email:</label>
+        <input type="email" id="newEmail" v-model="newUserForm.email" required />
+      </div>
+      <div>
+        <label for="newPassword">Contraseña:</label>
+        <input type="password" id="newPassword" v-model="newUserForm.password" required />
+      </div>
+
+      <button type="submit">Confirmar</button>
+      <button type="button" @click="cancelCreating">Cancelar</button>
+    </form>
   </main>
 </template>
 
@@ -61,6 +79,8 @@ const usuarioActual = ref(null);
 const usuarios = ref([...usuariosData]); 
 const isEditing = ref(false); 
 const editUserForm = ref({ name: '', email: '', password: '' }); 
+const isCreating = ref(false);
+const newUserForm = ref({ name: '', email: '', password: '' }); 
 let editIndex = ref(null); 
 
 const startEditing = (user, index) => {
@@ -112,15 +132,21 @@ const submitForm = () => {
   }
 };
 
-const agregarUsuario = () => {
-  const nuevoUsuario = {
-    name: 'Nuevo Usuario',
-    email: `nuevo${usuarios.value.length + 1}@email.com`,
-    password: 'password123'
-  };
-  usuarios.value.push(nuevoUsuario);
+const showCreateUserForm = () => {
+  isCreating.value = true;
+  newUserForm.value = { name: '', email: '', password: '' };
 };
 
+const createUser = () => {
+  const newUser = { ...newUserForm.value };
+  usuarios.value.push(newUser);
+  cancelCreating();
+};
+
+const cancelCreating = () => {
+  isCreating.value = false;
+  newUserForm.value = { name: '', email: '', password: '' };
+};
 onMounted(() => {
   const storedUser = sessionStorage.getItem('usuarioActual');
   if (storedUser) {
