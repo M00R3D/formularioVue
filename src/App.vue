@@ -22,10 +22,29 @@
         <li v-for="(user, index) in usuarios" :key="user.email">
           {{ user.name }} - {{ user.email }} 
           <button type="submit" @click="deleteUser(index)">Eliminar</button>
+          <button @click="startEditing(user, index)">Editar</button>
         </li>
       </ul>
       <button @click="cerrarSesion">Cerrar sesión</button>
     </div>
+
+    <form v-if="isEditing" @submit.prevent="updateUser">
+      <div>
+        <label for="editName">Nombre:</label>
+        <input type="text" id="editName" v-model="editUserForm.name" required />
+      </div>
+      <div>
+        <label for="editEmail">Email:</label>
+        <input type="email" id="editEmail" v-model="editUserForm.email" required />
+      </div>
+      <div>
+        <label for="editPassword">Contraseña:</label>
+        <input type="password" id="editPassword" v-model="editUserForm.password" required />
+      </div>
+
+      <button type="submit">Guardar Cambios</button>
+      <button type="button" @click="cancelEditing">Cancelar</button>
+    </form>
   </main>
 </template>
 
@@ -37,6 +56,28 @@ const email = ref('');
 const password = ref('');
 const usuarioActual = ref(null);
 const usuarios = ref([...usuariosData]); 
+const isEditing = ref(false); 
+const editUserForm = ref({ name: '', email: '', password: '' }); 
+let editIndex = ref(null); 
+
+const startEditing = (user, index) => {
+  isEditing.value = true;
+  editIndex.value = index;
+  editUserForm.value = { ...user };
+};
+
+const cancelEditing = () => {
+  isEditing.value = false;
+  editUserForm.value = { name: '', email: '', password: '' };
+  editIndex.value = null;
+};
+
+const updateUser = () => {
+  if (editIndex.value !== null) {
+    usuarios.value[editIndex.value] = { ...editUserForm.value };
+    cancelEditing();
+  }
+};
 
 const deleteUser = (index) => {
   usuarios.value.splice(index, 1);
